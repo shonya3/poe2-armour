@@ -19,6 +19,11 @@ export class AppRootElement extends SignalWatcher(LitElement) {
 		return html`
 			<header id="header">
 				<h1>Path of Exile 2 Armour</h1>
+				<div class="icons">
+					<a target="_blank" href="https://github.com/shonya3/poe2-armour">
+						<sl-icon name="github"></sl-icon>
+					</a>
+				</div>
 			</header>
 			<div id="tables">
 				${damages.value
@@ -87,6 +92,8 @@ export class AppRootElement extends SignalWatcher(LitElement) {
 		#header {
 			padding-block: 1rem;
 			padding-left: 1rem;
+			display: flex;
+			justify-content: space-between;
 		}
 
 		#controls {
@@ -112,7 +119,7 @@ export class AppRootElement extends SignalWatcher(LitElement) {
 			flex-direction: column;
 			gap: 1rem;
 
-			@media (width > 450px) {
+			@media (width > 600px) {
 				flex-direction: row;
 				align-items: center;
 				gap: 8rem;
@@ -123,12 +130,36 @@ export class AppRootElement extends SignalWatcher(LitElement) {
 			padding-inline: 1rem;
 			display: flex;
 			flex-wrap: wrap;
+			justify-content: center;
 			gap: 60px;
+
+			@media (width > 600px) {
+				justify-content: initial;
+			}
 		}
 
 		#tip {
 			padding: 3rem;
 			max-width: 400px;
+		}
+
+		.icons {
+			display: flex;
+			align-items: center;
+			gap: 0rem;
+			padding-right: 0.5rem;
+
+			@media (width > 500px) {
+				padding-right: 4rem;
+			}
+
+			sl-icon {
+				font-size: 1.5rem;
+
+				a {
+					all: unset;
+				}
+			}
 		}
 	`;
 }
