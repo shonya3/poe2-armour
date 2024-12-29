@@ -19,11 +19,6 @@ export class AppRootElement extends SignalWatcher(LitElement) {
 		return html`
 			<header id="header">
 				<h1>Path of Exile 2 Armour</h1>
-				<div id="controls">
-					<add-value @add-value__add=${this.#h_add_damage} label="Add damage table"></add-value>
-					<add-value label="Add armour row" @add-value__add=${this.#h_add_armour_row}></add-value>
-					<sl-button size="small" @click=${this.to_defaults}>to defaults</sl-button>
-				</div>
 			</header>
 			<div id="tables">
 				${damages.value
@@ -37,6 +32,15 @@ export class AppRootElement extends SignalWatcher(LitElement) {
 							></armour-table>`
 					)}
 			</div>
+
+			<div id="controls">
+				<div class="add">
+					<add-value @add-value__add=${this.#h_add_damage} label="Add damage table"></add-value>
+					<add-value label="Add armour row" @add-value__add=${this.#h_add_armour_row}></add-value>
+				</div>
+				<sl-button size="small" @click=${this.to_defaults}>to defaults</sl-button>
+			</div>
+
 			<div id="tip">
 				<sl-alert variant="primary" open>
 					<sl-icon slot="icon" name="info-circle"></sl-icon>
@@ -86,13 +90,36 @@ export class AppRootElement extends SignalWatcher(LitElement) {
 		}
 
 		#controls {
+			padding-top: 1rem;
 			display: flex;
-			justify-content: space-between;
-			align-items: center;
+			flex-wrap: wrap;
+			flex-direction: column;
+			gap: 1rem;
+
+			@media (width > 450px) {
+				flex-direction: row;
+				justify-content: space-between;
+				align-items: center;
+				max-width: 1300px;
+			}
+		}
+
+		.add {
+			padding: 1rem;
+			padding-top: 1rem;
+			display: flex;
+			flex-wrap: wrap;
+			flex-direction: column;
+			gap: 1rem;
+
+			@media (width > 450px) {
+				flex-direction: row;
+				align-items: center;
+				gap: 8rem;
+			}
 		}
 
 		#tables {
-			padding-top: 1rem;
 			padding-inline: 1rem;
 			display: flex;
 			flex-wrap: wrap;
