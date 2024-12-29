@@ -64,6 +64,12 @@ export class AppRootElement extends SignalWatcher(LitElement) {
 					</li>
 
 					<li>
+						<a target="_blank" href="https://www.poe2wiki.net/wiki/Armour#Rule_of_thumb"
+							>Poe 2 Wiki Armour</a
+						>
+					</li>
+
+					<li>
 						<a target="_blank" href="https://www.poewiki.net/wiki/Armour#Rule_of_thumb">Poe Wiki Armour</a>
 					</li>
 				</ul>
