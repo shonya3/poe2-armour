@@ -1,6 +1,6 @@
 import { use_local_storage } from '../hooks/storage';
 
-const default_value = () => [0, 2000, 3000, 6500, 10000];
+const default_value = () => [0, 500, 1000, 2000, 3000, 5000, 6500, 10000];
 const value = use_local_storage('armours', default_value());
 
 export const armours = {
