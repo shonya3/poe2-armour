@@ -38,7 +38,9 @@ export class ArmourTableElement extends SignalWatcher(LitElement) {
 	protected render(): TemplateResult {
 		return html`<table>
 				<caption>
-					${this.damage}
+					${this.damage}${this.damage === 1100
+						? html`<span id="monkey-slam-note">(a3 monkey slam)</span>`
+						: null}
 				</caption>
 				<thead>
 					<th>Armour</th>
@@ -130,6 +132,10 @@ export class ArmourTableElement extends SignalWatcher(LitElement) {
 
 		.poe1 {
 			background-color: #e7e5e4;
+		}
+
+		#monkey-slam-note {
+			font-size: 16px;
 		}
 	`;
 }
