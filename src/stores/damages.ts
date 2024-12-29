@@ -1,6 +1,8 @@
+import { is_equal } from '../equality';
 import { use_local_storage } from '../hooks/storage';
 
-const value = use_local_storage('damages', [100, 500, 1100]);
+const default_value = () => [100, 500, 1100];
+const value = use_local_storage('damages', default_value());
 
 export const damages = {
 	value,
@@ -11,4 +13,5 @@ export const damages = {
 		value.set(value.get().filter(d => d !== damage));
 	},
 	to_default: () => value.set([100, 500, 1100]),
+	is_default: (): boolean => is_equal(value.get(), default_value()),
 };

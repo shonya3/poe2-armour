@@ -41,7 +41,12 @@ export class AppRootElement extends SignalWatcher(LitElement) {
 					<add-value @add-value__add=${this.#h_add_damage} label="Add damage table"></add-value>
 					<add-value label="Add armour row" @add-value__add=${this.#h_add_armour_row}></add-value>
 				</div>
-				<sl-button size="small" @click=${this.to_defaults}>to defaults</sl-button>
+				<sl-button
+					.disabled=${armours.is_default() && damages.is_default()}
+					size="small"
+					@click=${this.to_defaults}
+					>to defaults</sl-button
+				>
 			</div>
 
 			<div id="tip">
