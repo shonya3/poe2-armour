@@ -23,7 +23,9 @@ export class AddInputElement extends SignalWatcher(LitElement) {
 					@input=${this.#update_input_value}
 					.value=${this.#input_value.get()}
 				></sl-input>
-				<sl-button size=${this.size} .disabled=${!this.#input_value.get()}>${this.label}</sl-button>
+				<sl-button type="submit" size=${this.size} .disabled=${!this.#input_value.get()}
+					>${this.label}</sl-button
+				>
 			</form>
 		</div>`;
 	}
