@@ -1,5 +1,5 @@
 import { LitElement, html, css, TemplateResult } from 'lit';
-import { customElement, query } from 'lit/decorators.js';
+import { customElement } from 'lit/decorators.js';
 import './elements/armour-table';
 import { SignalWatcher } from '@lit-labs/signals';
 import { RemoveEvent } from './elements/armour-table';
@@ -13,8 +13,6 @@ import '@shoelace-style/shoelace/dist/components/icon/icon.js';
 
 @customElement('app-root')
 export class AppRootElement extends SignalWatcher(LitElement) {
-	@query('#damage_input') damage_input!: HTMLInputElement;
-
 	protected render(): TemplateResult {
 		return html`
 			<header id="header">
