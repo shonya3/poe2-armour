@@ -167,6 +167,10 @@ export class AppRootElement extends SignalWatcher(LitElement) {
 				}
 			}
 		}
+
+		#links {
+			padding: 1rem;
+		}
 	`;
 }
 
