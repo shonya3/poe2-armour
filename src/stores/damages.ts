@@ -12,6 +12,6 @@ export const damages = {
 	remove: (damage: number) => {
 		value.set(value.get().filter(d => d !== damage));
 	},
-	to_default: () => value.set([100, 500, 1100]),
+	to_default: () => value.set(default_value()),
 	is_default: (): boolean => is_equal(value.get(), default_value()),
 };
