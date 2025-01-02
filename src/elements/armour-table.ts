@@ -6,11 +6,13 @@ import './add-value';
 import { armours } from '../stores/armours';
 import '@shoelace-style/shoelace/dist/components/button/button.js';
 import { signal, SignalWatcher } from '@lit-labs/signals';
+import { Mode } from '../mode';
 
 @customElement('armour-table')
 export class ArmourTableElement extends SignalWatcher(LitElement) {
 	#is_alt_key_active = signal(false);
 
+	@property({ reflect: true }) mode: Mode = 'idle';
 	@property({ type: Number, reflect: true }) damage = 0;
 	@property({ type: Array }) armours: Array<number> = [0, 2000, 3000, 6500, 10000];
 
@@ -71,7 +73,7 @@ export class ArmourTableElement extends SignalWatcher(LitElement) {
 										? html`<td class="poe1 damage">${fmt(poe1.damage)}</td>
 												<td class="poe1 reduction">${fmt_reduction(poe1.reduction)}</td>`
 										: null}
-									${armour === 0
+									${armour === 0 || this.mode !== 'edit'
 										? null
 										: html`<td>
 												<sl-button size="small" @click=${() => armours.remove(armour)}
@@ -82,7 +84,9 @@ export class ArmourTableElement extends SignalWatcher(LitElement) {
 						)}
 				</tbody>
 			</table>
-			<sl-button @click=${this.#emit_remove} id="remove">Remove</sl-button>`;
+			${this.mode === 'edit'
+				? html`<sl-button @click=${this.#emit_remove} id="remove">Remove</sl-button>`
+				: null}`;
 	}
 
 	#emit_remove() {

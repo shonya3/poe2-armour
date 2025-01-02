@@ -10,9 +10,12 @@ import { AddValueEvent } from './elements/add-value';
 import '@shoelace-style/shoelace/dist/components/button/button.js';
 import '@shoelace-style/shoelace/dist/components/alert/alert.js';
 import '@shoelace-style/shoelace/dist/components/icon/icon.js';
+import { use_local_storage } from './hooks/storage';
 
 @customElement('app-root')
 export class AppRootElement extends SignalWatcher(LitElement) {
+	#mode = use_local_storage('mode', 'idle');
+
 	protected render(): TemplateResult {
 		return html`
 			<header id="header">
@@ -29,6 +32,7 @@ export class AppRootElement extends SignalWatcher(LitElement) {
 					.map(
 						dmg =>
 							html`<armour-table
+								.mode=${this.#mode.get()}
 								.armours=${armours.value.get()}
 								@armour-table__remove=${this.#h_remove_table}
 								damage=${dmg}
@@ -37,16 +41,19 @@ export class AppRootElement extends SignalWatcher(LitElement) {
 			</div>
 
 			<div id="controls">
-				<div class="add">
-					<add-value @add-value__add=${this.#h_add_damage} label="Add damage table"></add-value>
-					<add-value label="Add armour row" @add-value__add=${this.#h_add_armour_row}></add-value>
-				</div>
-				<sl-button
-					.disabled=${armours.is_default() && damages.is_default()}
-					size="small"
-					@click=${this.to_defaults}
-					>to defaults</sl-button
-				>
+				<sl-button @click=${this.#toggle_mode}>Manage</sl-button>
+				${this.#mode.get() === 'edit'
+					? html`<div class="add">
+								<add-value @add-value__add=${this.#h_add_damage} label="Add damage table"></add-value>
+								<add-value label="Add armour row" @add-value__add=${this.#h_add_armour_row}></add-value>
+							</div>
+							<sl-button
+								.disabled=${armours.is_default() && damages.is_default()}
+								size="small"
+								@click=${this.to_defaults}
+								>to defaults</sl-button
+							>`
+					: null}
 			</div>
 
 			<div id="tip">
@@ -80,6 +87,10 @@ export class AppRootElement extends SignalWatcher(LitElement) {
 		`;
 	}
 
+	#toggle_mode() {
+		this.#mode.set(this.#mode.get() === 'edit' ? 'idle' : 'edit');
+	}
+
 	to_defaults() {
 		damages.to_default();
 		armours.to_default();
@@ -107,6 +118,7 @@ export class AppRootElement extends SignalWatcher(LitElement) {
 
 		#controls {
 			padding-top: 1rem;
+			padding-inline: 1rem;
 			display: flex;
 			flex-wrap: wrap;
 			flex-direction: column;
@@ -121,8 +133,6 @@ export class AppRootElement extends SignalWatcher(LitElement) {
 		}
 
 		.add {
-			padding: 1rem;
-			padding-top: 1rem;
 			display: flex;
 			flex-wrap: wrap;
 			flex-direction: column;

@@ -1,5 +1,6 @@
 import { signal } from '@lit-labs/signals';
 import { effect } from 'signal-utils/subtle/microtask-effect';
+import { Mode } from '../mode';
 
 /**
  * Registry for Storage keys and types. Use with declaration merging in any file.
@@ -17,6 +18,7 @@ import { effect } from 'signal-utils/subtle/microtask-effect';
 export interface Registry {
 	armours: Array<number>;
 	damages: Array<number>;
+	mode: Mode;
 }
 
 export function use_local_storage<Key extends keyof Registry>(storage_key: Key, default_value: Registry[Key]) {
