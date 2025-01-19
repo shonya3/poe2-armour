@@ -1,7 +1,7 @@
 import { LitElement, html, css, TemplateResult } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { fmt } from '../fmt';
-import { poe1, poe2 } from '../armour';
+import { poe1, poe2, poe2_010 } from '../armour';
 import './add-value';
 import { armours } from '../stores/armours';
 import '@shoelace-style/shoelace/dist/components/button/button.js';
@@ -48,6 +48,7 @@ export class ArmourTableElement extends SignalWatcher(LitElement) {
 					<th>Armour</th>
 					<th>Damage</th>
 					<th>Reduction</th>
+					${this.#is_alt_key_active.get() ? html`<th colspan="2">PoE 2 pre buff</th>` : null}
 					${this.#is_alt_key_active.get() ? html`<th colspan="2">PoE 1</th>` : null}
 				</thead>
 				<tbody>
@@ -58,17 +59,25 @@ export class ArmourTableElement extends SignalWatcher(LitElement) {
 								reduction: poe2.reduction({ armour, damage: this.damage }),
 								damage: poe2.total_damage({ armour, damage: this.damage }),
 							},
+							poe2_010: {
+								reduction: poe2_010.reduction({ armour, damage: this.damage }),
+								damage: poe2_010.total_damage({ armour, damage: this.damage }),
+							},
 							poe1: {
 								reduction: poe1.reduction({ armour, damage: this.damage }),
 								damage: poe1.total_damage({ armour, damage: this.damage }),
 							},
 						}))
 						.map(
-							({ armour, poe2, poe1 }) =>
+							({ armour, poe2, poe2_010, poe1 }) =>
 								html`<tr>
 									<td>${armour}</td>
 									<td class="damage">${fmt(poe2.damage)}</td>
 									<td class="reduction">${fmt_reduction(poe2.reduction)}</td>
+									${this.#is_alt_key_active.get()
+										? html`<td class="poe1 damage">${fmt(poe2_010.damage)}</td>
+												<td class="poe1 reduction">${fmt_reduction(poe2_010.reduction)}</td>`
+										: null}
 									${this.#is_alt_key_active.get()
 										? html`<td class="poe1 damage">${fmt(poe1.damage)}</td>
 												<td class="poe1 reduction">${fmt_reduction(poe1.reduction)}</td>`
