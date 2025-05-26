@@ -29,18 +29,18 @@ export class ArmourChartElement extends SignalWatcher(LitElement) {
 
 	static styles = css`
 		:host {
-			display: block;
+			display: flex; /* Use flexbox to manage child layout */
+			flex-direction: column; /* Stack children vertically */
 			width: 100%;
 			max-width: 700px; /* Max width for readability, can be adjusted */
-			padding: 1rem;
-			box-sizing: border-box;
-			/* Ensure the host has some dimensions for the canvas to relate to */
-			position: relative; /* Important for child canvas sizing */
-			min-height: 300px; /* Or any other sensible minimum height */
+			height: 600px; /* Define a fixed height for the component */
+			box-sizing: border-box; /* Include padding and border in the element's total width and height */
+			padding: 1rem; /* Add some padding around the content */
 		}
 		canvas {
 			width: 100% !important; /* Override potential inline styles from Chart.js if needed */
-			height: 100% !important; /* Make canvas fill the host's height */
+			flex-grow: 1; /* Make canvas take up all remaining vertical space */
+			min-height: 0; /* Important for flexbox to allow canvas to shrink if needed */
 		}
 		.chart-type-toggle {
 			margin-bottom: 1rem;
@@ -162,7 +162,7 @@ export class ArmourChartElement extends SignalWatcher(LitElement) {
 			},
 			options: {
 				responsive: true,
-				maintainAspectRatio: true,
+				maintainAspectRatio: false,
 				plugins: {
 					title: {
 						display: true,
