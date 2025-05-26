@@ -17,7 +17,7 @@ export const poe2: ArmourFormula = {
 };
 
 export const poe2_010: ArmourFormula = {
-	name: 'PoE 2 (0.10)',
+	name: 'PoE 2 (0.1.0)',
 	reduction({ armour, damage }: { armour: number; damage: number }): number {
 		return armour / (armour + 12 * damage);
 	},
