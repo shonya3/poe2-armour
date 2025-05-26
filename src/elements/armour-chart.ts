@@ -2,6 +2,9 @@ import { LitElement, html, css, TemplateResult } from 'lit';
 import { customElement, property, query, state } from 'lit/decorators.js';
 import { Chart } from 'chart.js/auto'; // Automatically registers controllers, elements, scales, plugins
 import { allFormulas, ArmourFormula, generateSeriesData, SeriesData } from '../armour';
+import '@shoelace-style/shoelace/dist/components/radio-group/radio-group.js';
+import '@shoelace-style/shoelace/dist/components/radio-button/radio-button.js';
+import { use_local_storage } from '../hooks/storage';
 
 const DEFAULT_ARMOUR_STEPS_FOR_CHART = Array.from({ length: 31 }, (_, i) => i * 1000); // 0 to 30,000
 
@@ -13,8 +16,7 @@ export class ArmourChartElement extends LitElement {
 	@property({ type: Array })
 	armourSteps: number[] = DEFAULT_ARMOUR_STEPS_FOR_CHART;
 
-	// For this chart, we'll focus on 'reduction'. Could be a prop if more flexibility is needed.
-	private chartDataType: 'reduction' | 'total_damage' = 'total_damage';
+	#chartDataType = use_local_storage('chartDataType', 'total_damage');
 
 	@query('canvas')
 	private canvas!: HTMLCanvasElement;
@@ -39,10 +41,32 @@ export class ArmourChartElement extends LitElement {
 			width: 100% !important; /* Override potential inline styles from Chart.js if needed */
 			height: 100% !important; /* Make canvas fill the host's height */
 		}
+		.chart-type-toggle {
+			margin-bottom: 1rem;
+			display: flex;
+			justify-content: center;
+		}
 	`;
 
 	protected render(): TemplateResult {
-		return html`<canvas></canvas>`;
+		return html`
+			<sl-radio-group
+				label="Chart Data Type"
+				value=${this.#chartDataType.get()}
+				@sl-change=${this.handleChartDataTypeChange}
+				class="chart-type-toggle"
+				size="small"
+			>
+				<sl-radio-button value="total_damage">Damage Taken</sl-radio-button>
+				<sl-radio-button value="reduction">Damage Reduction (%)</sl-radio-button>
+			</sl-radio-group>
+			<canvas></canvas>
+		`;
+	}
+
+	private handleChartDataTypeChange(event: Event) {
+		const radioGroup = event.target as HTMLInputElement;
+		this.#chartDataType.set(radioGroup.value as 'reduction' | 'total_damage');
 	}
 
 	protected firstUpdated(): void {
@@ -50,7 +74,12 @@ export class ArmourChartElement extends LitElement {
 	}
 
 	protected updated(changedProperties: Map<string | number | symbol, unknown>): void {
-		if ((changedProperties.has('damageInput') || changedProperties.has('armourSteps')) && this.canvas) {
+		if (
+			(changedProperties.has('damageInput') ||
+				changedProperties.has('armourSteps') ||
+				changedProperties.has('chartDataType')) &&
+			this.canvas
+		) {
 			this.createOrUpdateChart();
 		}
 	}
@@ -109,7 +138,7 @@ export class ArmourChartElement extends LitElement {
 
 		const allSeriesData: { formula: ArmourFormula; series: SeriesData }[] = allFormulas.map(formula => ({
 			formula,
-			series: generateSeriesData(formula, this.damageInput, this.armourSteps, this.chartDataType),
+			series: generateSeriesData(formula, this.damageInput, this.armourSteps, this.#chartDataType.get()),
 		}));
 
 		const chartJsDatasets = allSeriesData.map(({ formula, series }, index) => {
@@ -131,9 +160,9 @@ export class ArmourChartElement extends LitElement {
 			};
 		});
 
-		const yAxisTitle = this.chartDataType === 'reduction' ? 'Damage Reduction (%)' : 'Damage Taken';
+		const yAxisTitle = this.#chartDataType.get() === 'reduction' ? 'Damage Reduction (%)' : 'Damage Taken';
 		const chartTitle = `Armour Effectiveness vs ${this.damageInput} Damage Hit`;
-		const currentChartDataType = this.chartDataType; // Capture for use in callbacks
+		const currentChartDataType = this.#chartDataType.get(); // Capture for use in callbacks
 
 		this.chartInstance = new Chart(this.canvas, {
 			type: 'line',

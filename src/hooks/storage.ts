@@ -19,6 +19,7 @@ export interface Registry {
 	armours: Array<number>;
 	damages: Array<number>;
 	mode: Mode;
+	chartDataType: 'reduction' | 'total_damage';
 }
 
 export function use_local_storage<Key extends keyof Registry>(storage_key: Key, default_value: Registry[Key]) {
