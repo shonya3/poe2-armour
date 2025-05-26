@@ -26,20 +26,6 @@ export class AppRootElement extends SignalWatcher(LitElement) {
 					</a>
 				</div>
 			</header>
-			<div id="tables">
-				${damages.value
-					.get()
-					.map(
-						dmg =>
-							html`<armour-table
-								.mode=${this.#mode.get()}
-								.armours=${armours.value.get()}
-								@armour-table__remove=${this.#h_remove_table}
-								damage=${dmg}
-							></armour-table>`
-					)}
-			</div>
-
 			<div id="controls">
 				<sl-button @click=${this.#toggle_mode}>Manage</sl-button>
 				${this.#mode.get() === 'edit'
@@ -54,6 +40,19 @@ export class AppRootElement extends SignalWatcher(LitElement) {
 								>to defaults</sl-button
 							>`
 					: null}
+			</div>
+			<div id="tables">
+				${damages.value
+					.get()
+					.map(
+						dmg =>
+							html`<armour-table
+								.mode=${this.#mode.get()}
+								.armours=${armours.value.get()}
+								@armour-table__remove=${this.#h_remove_table}
+								damage=${dmg}
+							></armour-table>`
+					)}
 			</div>
 
 			<div id="tip">
@@ -117,7 +116,6 @@ export class AppRootElement extends SignalWatcher(LitElement) {
 		}
 
 		#controls {
-			padding-top: 1rem;
 			padding-inline: 1rem;
 			display: flex;
 			flex-wrap: wrap;
@@ -147,6 +145,7 @@ export class AppRootElement extends SignalWatcher(LitElement) {
 
 		#tables {
 			padding-inline: 1rem;
+			padding-top: 1rem;
 			display: flex;
 			flex-wrap: wrap;
 			justify-content: center;

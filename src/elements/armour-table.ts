@@ -4,13 +4,17 @@ import { fmt } from '../fmt';
 import { poe1, poe2, poe2_010 } from '../armour';
 import './add-value';
 import { armours } from '../stores/armours';
+import '../elements/armour-chart';
 import '@shoelace-style/shoelace/dist/components/button/button.js';
+import '@shoelace-style/shoelace/dist/components/icon-button/icon-button.js';
+import '@shoelace-style/shoelace/dist/components/dialog/dialog.js';
 import { signal, SignalWatcher } from '@lit-labs/signals';
 import { Mode } from '../mode';
 
 @customElement('armour-table')
 export class ArmourTableElement extends SignalWatcher(LitElement) {
 	#is_alt_key_active = signal(false);
+	#is_chart_dialog_open = signal(false);
 
 	@property({ reflect: true }) mode: Mode = 'idle';
 	@property({ type: Number, reflect: true }) damage = 0;
@@ -38,12 +42,18 @@ export class ArmourTableElement extends SignalWatcher(LitElement) {
 	}
 
 	protected render(): TemplateResult {
-		return html`<table>
-				<caption>
-					${this.damage}${this.damage === 1100
-						? html`<span id="monkey-slam-note">(a3 monkey slam)</span>`
-						: null}
-				</caption>
+		return html`
+			<div class="table-header">
+				<div class="caption-content">
+					${this.damage}
+					${this.damage === 1100 ? html`<span id="monkey-slam-note">(a3 monkey slam)</span>` : null}
+				</div>
+				<sl-button variant="default" size="small" @click=${() => this.#is_chart_dialog_open.set(true)}>
+					<sl-icon name="bar-chart-line" slot="prefix"></sl-icon>Show Chart
+				</sl-button>
+			</div>
+
+			<table>
 				<thead>
 					<th>Armour</th>
 					<th>Damage</th>
@@ -93,9 +103,19 @@ export class ArmourTableElement extends SignalWatcher(LitElement) {
 						)}
 				</tbody>
 			</table>
-			${this.mode === 'edit'
-				? html`<sl-button @click=${this.#emit_remove} id="remove">Remove</sl-button>`
-				: null}`;
+			${this.mode === 'edit' ? html`<sl-button @click=${this.#emit_remove} id="remove">Remove</sl-button>` : null}
+
+			<sl-dialog
+				label="Armour Effectiveness Chart for ${this.damage} Damage"
+				class="chart-dialog"
+				.open=${this.#is_chart_dialog_open.get()}
+				@sl-after-hide=${() => this.#is_chart_dialog_open.set(false)}
+			>
+				${this.#is_chart_dialog_open.get()
+					? html`<armour-chart .damageInput=${this.damage} .armourSteps=${this.armours}></armour-chart>`
+					: null}
+			</sl-dialog>
+		`;
 	}
 
 	#emit_remove() {
@@ -111,6 +131,19 @@ export class ArmourTableElement extends SignalWatcher(LitElement) {
 			position: relative;
 		}
 
+		.table-header {
+			display: flex;
+			align-items: center;
+			gap: 1rem;
+			padding: 0.4rem 0; /* Adjust padding as needed */
+			margin-bottom: 0.5rem;
+		}
+
+		.caption-content {
+			font-size: 28px;
+			font-weight: 500; /* Adjusted from 600 for consistency if desired */
+			color: #020617; /* Ensure color is valid, was ##020617 */
+		}
 		td,
 		th {
 			padding: 0.4rem 0.8rem;
@@ -119,13 +152,6 @@ export class ArmourTableElement extends SignalWatcher(LitElement) {
 		td {
 			color: #3f3f46;
 			vertical-align: middle;
-		}
-
-		caption {
-			font-size: 28px;
-			padding: 0.4rem;
-			font-weight: 600;
-			color: ##020617;
 		}
 
 		td.damage {
@@ -149,6 +175,11 @@ export class ArmourTableElement extends SignalWatcher(LitElement) {
 
 		#monkey-slam-note {
 			font-size: 16px;
+		}
+
+		.chart-dialog::part(panel) {
+			width: 90vw;
+			max-width: 800px;
 		}
 	`;
 }
