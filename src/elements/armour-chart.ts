@@ -5,11 +5,12 @@ import { allFormulas, ArmourFormula, generateSeriesData, SeriesData } from '../a
 import '@shoelace-style/shoelace/dist/components/radio-group/radio-group.js';
 import '@shoelace-style/shoelace/dist/components/radio-button/radio-button.js';
 import { use_local_storage } from '../hooks/storage';
+import { SignalWatcher } from '@lit-labs/signals';
 
 const DEFAULT_ARMOUR_STEPS_FOR_CHART = Array.from({ length: 31 }, (_, i) => i * 1000); // 0 to 30,000
 
 @customElement('armour-chart')
-export class ArmourChartElement extends LitElement {
+export class ArmourChartElement extends SignalWatcher(LitElement) {
 	@property({ type: Number })
 	damageInput: number = 1000;
 
@@ -69,19 +70,8 @@ export class ArmourChartElement extends LitElement {
 		this.#chartDataType.set(radioGroup.value as 'reduction' | 'total_damage');
 	}
 
-	protected firstUpdated(): void {
+	protected updated(): void {
 		this.createOrUpdateChart();
-	}
-
-	protected updated(changedProperties: Map<string | number | symbol, unknown>): void {
-		if (
-			(changedProperties.has('damageInput') ||
-				changedProperties.has('armourSteps') ||
-				changedProperties.has('chartDataType')) &&
-			this.canvas
-		) {
-			this.createOrUpdateChart();
-		}
 	}
 
 	connectedCallback(): void {
